@@ -19,4 +19,4 @@ def file_to_vector(filepath):
 
 # return a similarity score between 1-10
 def compare_vectors(a, b):
-    return a == b
+    return len(a)

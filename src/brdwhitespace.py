@@ -41,7 +41,6 @@ S = difflib.SequenceMatcher(None, a="", b="")
 # return a similarity score between 0-10
 # 
 def compare_vectors(a, b):
-
     S.set_seq1(a)
     S.set_seq2(b)
     similarity_score1 = S.ratio() * 10

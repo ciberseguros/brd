@@ -198,6 +198,10 @@ if not args.clobber_prior_outfile:
 
 # Do analysis
 
+assert 0 <= args.whitespace_threshold <= 10
+assert 0 <= args.whitespace_threshold <= 10
+assert 0 <= args.whitespace_threshold <= 10
+
 thresholds = {
             "Whitespace Gestalt Test"       : args.whitespace_threshold,
             "Tokenized Ngrams Test"         : args.tokenized_ngram_threshold,

@@ -59,15 +59,45 @@ class brdanalyzer:
 
     def do_tokenized_ngrams(self):
         self.tokenized_ngrams_result = []
+        self.tokenized_ngrams_vectors = []
 
-        brd_logger.warn("Tokenized ngrams not yet implemented")
+        brd_logger.warn("Tokenized ngrams not yet implemented correctly. It is currently a gestalt match")
+        for file in self.filelist:
+            self.tokenized_ngrams_vectors.append(brdtokenngram.file_to_vector(file))
+
+        for i, a in enumerate(self.filelist):
+            for j, b in enumerate(self.filelist):
+                if a <= b:
+                    continue #Skip self-comparisions, and duplicates
+                brd_logger.debug(f"Comparing {i}:{a} to {j}:{b}")
+
+                similarity_score = brdtokenngram.compare_vectors(self.tokenized_ngrams_vectors[i],self.tokenized_ngrams_vectors[j])
+
+                assert type(similarity_score) in [int, float], f"Similarity Score was not a number, but rather a {type(similarity_score)}"
+
+                self.tokenized_ngrams_result.append([a, b, similarity_score])
         #TODO parallelize
         pass
 
     def do_winnowing_hash(self):
         self.winnowing_hash_result = []
+        self.winnowing_hash_vectors = []
 
         brd_logger.warn("Winnowing hashes not yet implemented")
+        for file in self.filelist:
+            self.winnowing_hash_vectors.append(brdwinnow.file_to_vector(file))
+
+        for i, a in enumerate(self.filelist):
+            for j, b in enumerate(self.filelist):
+                if a <= b:
+                    continue #Skip self-comparisions, and duplicates
+                brd_logger.debug(f"Comparing {i}:{a} to {j}:{b}")
+
+                similarity_score = brdwinnow.compare_vectors(self.winnowing_hash_vectors[i],self.winnowing_hash_vectors[j])
+
+                assert type(similarity_score) in [int, float], f"Similarity Score was not a number, but rather a {type(similarity_score)}"
+
+                self.winnowing_hash_result.append([a, b, similarity_score])    
         #TODO parallelize
         pass
 
@@ -125,7 +155,7 @@ class brdanalyzer:
             # BFS from every PathA
             for _, start, _, _ in self.pairs:
                 cluster = set()
-                nextcluster = set([PathA])
+                nextcluster = set([start])
                 while "".join(sorted(list(cluster))) != "".join(sorted(list(nextcluster))):
                 #while cluster != nextcluster: 
                     cluster = nextcluster.copy()
@@ -133,6 +163,7 @@ class brdanalyzer:
                     for node in cluster:
                         for reachable in self.pairgraph[node]:
                             nextcluster.add(reachable)
+                brd_logger.info(f"Adding a cluster: {cluster}")
                 self.clusters.add(frozenset(cluster))
 
             brd_logger.info(f"Clusters found:")
