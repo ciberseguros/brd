@@ -7,7 +7,7 @@ class brdignorelist:
 
     def __init__(self, brdignore_path):
         brd_logger.debug("Creating new brdignorelist object.")
-        self.brdignore_directives = [brdignore_path]
+        self.brdignore_directives = []
 
         try:
             # load .brdignore if it exists, split by newlines, and ignore those file extensions
@@ -15,6 +15,7 @@ class brdignorelist:
                 self.brdignore_directives = sorted(list(set(list(a.strip() for a in brdignore_file.read().split("\n")))))
                 if "" in self.brdignore_directives:
                     self.brdignore_directives.remove("")
+                self.brdignore_directives.append(brdignore_path)
                 brd_logger.info(f"Ignoring the following wildcards: {self.brdignore_directives}")
 
 

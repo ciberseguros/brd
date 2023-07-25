@@ -16,19 +16,37 @@ try:
                     epilog='Use responsibly. Suspected plagiarists still deserve every human right. Have you been clear on your expectations?')
 
     parser.add_argument('input_directory', help="Perform an N^2 comparison among every file in this directory. To ignore certain file extensions, create a .brdignore file with a newline-separated list of wildcards to ignore.")
+    
     parser.add_argument('-r', '--recursive',
                     action='store_true', help="Compare all files in subdirectories of input_directory recursively. Note: Project structure comparison is not currently supported.")
+    
     parser.add_argument('-c', '--cluster',
                     action='store_true', help="Cluster pairwise outputs into groups of similar files.")
+    
     parser.add_argument('-v', '--verbose',
                     action='store_true', help="Show warning messages.")
+    
     parser.add_argument('-vv', '--very-verbose',
                     action='store_true', help="Be very verbose, but not painfully so.")
+    
     parser.add_argument('-d', '--debug',
                     action='store_true', help="Show every log message. May be painful.")
+    
     parser.add_argument('-mf', '--max-filecount', default=1000, help="Set the max number of files to be compared. Default 1000 If raising this limit, remember this tool runs in n^2 time.")      
+    
     parser.add_argument('-ms', '--max-size', default=100, help="Set the max size files to be compared in MB. Default 100. If raising this limit, watch out for RAM use and swapping causing slowdowns.") 
+    
+    parser.add_argument('-w', '--winnowing_hash_threshold',  default=brdanalyzer.WINNOWNING_DEFAULT_THRESHOLD,            
+                        help=f"Overwrite the default winnowing test threshold of {brdanalyzer.WINNOWNING_DEFAULT_THRESHOLD}") 
+    
+    parser.add_argument('-t', '--tokenized_ngram_threshold', default=brdanalyzer.TOKENIZED_NGRAMS_TEST_DEFAULT_THRESHOLD, 
+                        help=f"Overwrite the default tokenized Ngrams test threshold of {brdanalyzer.TOKENIZED_NGRAMS_TEST_DEFAULT_THRESHOLD}") 
+    
+    parser.add_argument('-s', '--whitespace_threshold',      default=brdanalyzer.WHITESPACE_GESTALT_DEFAULT_THRESHOLD,    
+                        help=f"Overwrite the default whitespace gestalt test threshold of {brdanalyzer.WHITESPACE_GESTALT_DEFAULT_THRESHOLD}") 
+    
     parser.add_argument('-o', '--outfile', default="brd_report.md", help="Tell BRD where to write its output report. BRD avoids ovewriting previous reports by adding an incremental counter.")      
+    
     parser.add_argument('-k', '--clobber-prior-outfile',
                     action='store_true', help="overwrite any previous report file with the same outfile name.")
 
@@ -101,7 +119,7 @@ try:
         brdign = brdignore.brdignorelist(brdignore_path)
         brd_logger.debug("Done loading brdignore")
     else:
-        brd_logger.info("No .brdignore found")
+        brd_logger.info(f"No .brdignore found")
 
     # load every filepath within input_dir
     if args.recursive:
@@ -129,6 +147,8 @@ try:
                     list_of_files.append(node)
                 else:
                     brd_logger.debug(f"Removing path {node} because it matches a .brdignore directive: {rule}.")
+            else:
+                list_of_files.append(node)
         else:
             brd_logger.debug(f"Removing path {node} because it is not a file.")
 
@@ -178,7 +198,13 @@ if not args.clobber_prior_outfile:
 
 # Do analysis
 
-brda = brdanalyzer.brdanalyzer(list_of_files, outfile_path)
+thresholds = {
+            "Whitespace Gestalt Test"       : args.whitespace_threshold,
+            "Tokenized Ngrams Test"         : args.tokenized_ngram_threshold,
+            "Winnowing Hash Test"           : args.winnowing_hash_threshold
+        }
+
+brda = brdanalyzer.brdanalyzer(list_of_files, outfile_path, thresholds)
 brd_logger.info("BRD Analyzer Engine initialized")
 
 brda.do_whitespace_ngrams()
