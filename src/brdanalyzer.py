@@ -270,5 +270,4 @@ The following sets of similar files are strongly connected (in the graph theory 
         except Exception as err:
             brd_logger.error(f"Error writing outfile: {type(err)}: {err}")
             brd_logger.error(f"Given filepath: {self.outfile}")
-            raise(err)
             exit(99)
