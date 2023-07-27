@@ -127,7 +127,7 @@ class brdanalyzer:
                     assert type(sscore) in [int, float], f"Similarity score must be a number! I see a {type(sscore)} coming from {result_src}"
                     
                     if sscore >= threshold:
-                        brd_logger.info(f"Found a suspicious pair {pathA} <--> {pathB} from {result_src} with similarity score of {sscore} (Threshold was {threshold})")
+                        brd_logger.debug(f"Found a suspicious pair {pathA} <--> {pathB} from {result_src} with similarity score of {sscore} (Threshold was {threshold})")
                         self.pairs.append([result_src] + result)
 
         except Exception as err:
@@ -163,7 +163,7 @@ class brdanalyzer:
                     for node in cluster:
                         for reachable in self.pairgraph[node]:
                             nextcluster.add(reachable)
-                brd_logger.info(f"Adding a cluster: {cluster}")
+                brd_logger.debug(f"Adding a cluster: {cluster}")
                 self.clusters.add(frozenset(cluster))
 
             brd_logger.info(f"Clusters found:")
@@ -265,7 +265,7 @@ The following sets of similar files are strongly connected (in the graph theory 
                 msg += "\n\n```\n==========================\nEnd Auto Generated Report\n==========================\n```"
 
                 report.write(msg)
-                brd_logger.info(msg)
+                brd_logger.debug(msg)
 
         except Exception as err:
             brd_logger.error(f"Error writing outfile: {type(err)}: {err}")

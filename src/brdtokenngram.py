@@ -38,8 +38,8 @@ def compare_vectors(a, b):
     S.set_seq1(a)
     S.set_seq2(b)
     similarity_score1 = S.ratio() * 10
-    S.set_seq1(a)
-    S.set_seq2(b)
+    S.set_seq1(b)
+    S.set_seq2(a)
     similarity_score2 = S.ratio() * 10
     similarity_score = (similarity_score1 + similarity_score2) / 2
     brd_logger.debug(f"Comparison yielded a score of: {similarity_score}")

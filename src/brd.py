@@ -198,14 +198,14 @@ if not args.clobber_prior_outfile:
 
 # Do analysis
 
-assert 0 <= args.whitespace_threshold <= 10
-assert 0 <= args.whitespace_threshold <= 10
-assert 0 <= args.whitespace_threshold <= 10
+assert 0 <= float(args.whitespace_threshold) <= 10
+assert 0 <= float(args.whitespace_threshold) <= 10
+assert 0 <= float(args.whitespace_threshold) <= 10
 
 thresholds = {
-            "Whitespace Gestalt Test"       : args.whitespace_threshold,
-            "Tokenized Ngrams Test"         : args.tokenized_ngram_threshold,
-            "Winnowing Hash Test"           : args.winnowing_hash_threshold
+            "Whitespace Gestalt Test"       : float(args.whitespace_threshold),
+            "Tokenized Ngrams Test"         : float(args.tokenized_ngram_threshold),
+            "Winnowing Hash Test"           : float(args.winnowing_hash_threshold)
         }
 
 brda = brdanalyzer.brdanalyzer(list_of_files, outfile_path, thresholds)

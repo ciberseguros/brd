@@ -27,7 +27,7 @@ def file_to_vector(filepath):
             
             whitespace_only_trimmed = re.sub(cut_vspace, two_newlines, whitespace_only)
 
-            brd_logger.debug(f"{filepath}: {list(whitespace_only_trimmed)}")
+            brd_logger.debug(f"{filepath}: {(whitespace_only_trimmed)}")
             vector += list(whitespace_only_trimmed)
 
     except Exception as err:
@@ -36,7 +36,7 @@ def file_to_vector(filepath):
 
     return vector
 
-S = difflib.SequenceMatcher(None, a="", b="")
+S = difflib.SequenceMatcher(None, a="", b="", autojunk=False)
 
 # return a similarity score between 0-10
 # 
@@ -44,9 +44,9 @@ def compare_vectors(a, b):
     S.set_seq1(a)
     S.set_seq2(b)
     similarity_score1 = S.ratio() * 10
-    S.set_seq1(a)
-    S.set_seq2(b)
+    S.set_seq1(b)
+    S.set_seq2(a)
     similarity_score2 = S.ratio() * 10
     similarity_score = (similarity_score1 + similarity_score2) / 2
-    brd_logger.debug(f"Comparison yielded a score of: {similarity_score}")
+    brd_logger.debug(f"Comparison yielded a score of: {similarity_score} - {similarity_score1:.2} & {similarity_score2:.2}")
     return similarity_score
